@@ -3,10 +3,15 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/(auth)/actions";
 
 export default async function DashboardPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  let user = null;
+  try {
+    const supabase = await createClient();
+    const result = await supabase.auth.getUser();
+    user = result.data.user;
+  } catch {
+    // Supabase yapılandırılmamış/erişilemezse korumalı sayfayı login'e yönlendir.
+    user = null;
+  }
 
   if (!user) redirect("/login");
 
