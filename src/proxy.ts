@@ -4,7 +4,7 @@ import { readEnv } from "@/lib/env";
 
 const PROTECTED_PREFIXES = ["/dashboard"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
   const { supabaseUrl, supabaseAnonKey } = readEnv(process.env);
 
@@ -23,18 +23,22 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const isProtected = PROTECTED_PREFIXES.some((p) =>
     request.nextUrl.pathname.startsWith(p)
   );
 
-  if (isProtected && !user) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (isProtected && !user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/login";
+      return NextResponse.redirect(url);
+    }
+  } catch {
+    // Supabase Auth erişilemezse siteyi 500'e düşürme; sayfa-içi guard korur.
   }
 
   return response;
