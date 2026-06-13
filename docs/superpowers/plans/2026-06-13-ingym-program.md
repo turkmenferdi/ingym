@@ -370,7 +370,7 @@ Create `src/lib/ai/gemini.ts`:
 ```ts
 import type { AiProvider, PlanContent, PlanInputs } from "./types";
 
-const MODEL = "gemini-2.0-flash";
+const MODEL = "gemini-2.5-flash";
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
 const RESPONSE_SCHEMA = {
