@@ -77,6 +77,10 @@ export default async function DashboardPage() {
         className="rounded bg-black px-6 py-3 text-center font-medium text-white">
         Programıma git
       </a>
+      <a href="/gunluk"
+        className="rounded border px-6 py-3 text-center font-medium">
+        Günlük takip
+      </a>
 
       <form action={signOut}>
         <button className="rounded border p-3 font-medium">Çıkış yap</button>
