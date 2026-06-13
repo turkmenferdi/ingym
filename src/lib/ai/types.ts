@@ -15,4 +15,15 @@ export type PlanInputs = {
 
 export interface AiProvider {
   generatePlanContent(inputs: PlanInputs): Promise<PlanContent | null>;
+  generateDailyFeedback(inputs: DailyFeedbackInputs): Promise<DailyFeedback | null>;
 }
+
+export type DailyFeedback = { message: string; tip: string };
+
+export type DailyFeedbackInputs = {
+  goal: string;
+  calories: number;
+  trained: boolean;
+  weightKg: number | null;
+  notes: string;
+};
