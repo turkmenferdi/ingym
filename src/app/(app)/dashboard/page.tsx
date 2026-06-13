@@ -73,9 +73,10 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      <p className="text-sm text-gray-500">
-        Spor + diyet programın bir sonraki sürümde burada olacak.
-      </p>
+      <a href="/program"
+        className="rounded bg-black px-6 py-3 text-center font-medium text-white">
+        Programıma git
+      </a>
 
       <form action={signOut}>
         <button className="rounded border p-3 font-medium">Çıkış yap</button>
