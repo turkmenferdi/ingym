@@ -12,23 +12,40 @@ const GOAL_LABELS: Record<string, string> = {
 export default async function DashboardPage() {
   let user = null;
   let profile = null;
+  let profileReadFailed = false;
   try {
     const supabase = await createClient();
     const result = await supabase.auth.getUser();
     user = result.data.user;
     if (user) {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("user_id", user.id)
         .maybeSingle();
-      profile = data;
+      if (error) {
+        profileReadFailed = true;
+      } else {
+        profile = data;
+      }
     }
   } catch {
     user = null;
   }
 
   if (!user) redirect("/login");
+
+  if (profileReadFailed) {
+    return (
+      <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-4 p-6">
+        <h1 className="text-2xl font-bold">Bir sorun oluştu</h1>
+        <p className="text-gray-600">
+          Profilin yüklenemedi. Lütfen sayfayı yenile; sorun sürerse biraz sonra tekrar dene.
+        </p>
+      </main>
+    );
+  }
+
   if (!profile) redirect("/onboarding");
 
   const hasFlags = Array.isArray(profile.health_flags) && profile.health_flags.length > 0;
