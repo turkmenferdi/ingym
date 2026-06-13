@@ -28,4 +28,4 @@ Kişisel AI spor koçu ve diyetisyen (PWA). Next.js + Supabase + Gemini.
 - [x] Plan 1 — Temel altyapı (auth, PWA, test)
 - [x] Plan 2 — Onboarding anketi (A)
 - [x] Plan 3 — Program üretimi (C)
-- [ ] Plan 4 — Günlük takip + feedback (D)
+- [x] Plan 4 — Günlük takip + feedback (D)
