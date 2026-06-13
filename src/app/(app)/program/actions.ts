@@ -41,22 +41,31 @@ export async function generateProgram() {
       profile: { goal: profile.goal, experience: profile.experience, cautious },
     })) ?? {};
 
+  const { data: inserted, error } = await supabase
+    .from("plans")
+    .insert({
+      user_id: user.id,
+      status: "active",
+      targets,
+      skeleton,
+      content,
+    })
+    .select("id")
+    .single();
+  if (error || !inserted) {
+    redirect(
+      "/program?error=" +
+        encodeURIComponent("Plan kaydedilemedi: " + (error?.message ?? ""))
+    );
+  }
+
+  // Yeni plan kaydedildi; önceki aktif planları arşivle (sıfır-aktif-plan penceresi olmaz).
   await supabase
     .from("plans")
     .update({ status: "archived" })
     .eq("user_id", user.id)
-    .eq("status", "active");
-
-  const { error } = await supabase.from("plans").insert({
-    user_id: user.id,
-    status: "active",
-    targets,
-    skeleton,
-    content,
-  });
-  if (error) {
-    redirect("/program?error=" + encodeURIComponent("Plan kaydedilemedi: " + error.message));
-  }
+    .eq("status", "active")
+    .neq("id", inserted.id);
 
   redirect("/program");
 }

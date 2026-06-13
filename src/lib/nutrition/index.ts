@@ -39,10 +39,20 @@ export function computeTargets(input: {
   const tdee = Math.round(b * ACTIVITY[input.activityLevel]);
   const calories = Math.max(MIN_CALORIES, tdee + GOAL_DELTA[input.goal]);
 
-  const proteinG = Math.round(1.8 * input.weightKg);
   const fatG = Math.round((calories * 0.25) / 9);
+  let proteinG = Math.round(1.8 * input.weightKg);
+  let carbsG: number;
+
   const remaining = calories - (proteinG * 4 + fatG * 9);
-  const carbsG = Math.max(0, Math.round(remaining / 4));
+  if (remaining < 0) {
+    // Protein + yağ kalori bütçesini aşıyor (taban senaryosu): karbonhidratı sıfırla,
+    // proteini kalan bütçeye sığacak şekilde kıs — makrolar kaloriyi aşmasın.
+    carbsG = 0;
+    const proteinBudget = calories - fatG * 9;
+    proteinG = Math.max(0, Math.round(proteinBudget / 4));
+  } else {
+    carbsG = Math.round(remaining / 4);
+  }
 
   return { bmr: b, tdee, calories, proteinG, fatG, carbsG };
 }

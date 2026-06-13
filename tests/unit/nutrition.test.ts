@@ -51,4 +51,15 @@ describe("computeTargets", () => {
     const kcal = t.proteinG * 4 + t.carbsG * 4 + t.fatG * 9;
     expect(Math.abs(kcal - t.calories)).toBeLessThanOrEqual(20);
   });
+
+  it("kalori tabanında makrolar bütçeyi aşmaz", () => {
+    const t = computeTargets({
+      gender: "female", weightKg: 145, heightCm: 100, age: 98,
+      activityLevel: "sedentary", goal: "lose",
+    });
+    const kcal = t.proteinG * 4 + t.carbsG * 4 + t.fatG * 9;
+    expect(kcal).toBeLessThanOrEqual(t.calories + 20);
+    expect(t.carbsG).toBeGreaterThanOrEqual(0);
+    expect(t.proteinG).toBeGreaterThan(0);
+  });
 });

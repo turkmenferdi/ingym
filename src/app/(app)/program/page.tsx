@@ -54,6 +54,9 @@ export default async function ProgramPage({
         </>
       ) : (
         <>
+          <p className="text-xs text-gray-400">
+            Bu plan bilgilendirme amaçlıdır; tıbbi tavsiye yerine geçmez.
+          </p>
           {content.summary && <p className="text-gray-700">{content.summary}</p>}
 
           <section className="flex flex-col gap-1 rounded border p-4">
