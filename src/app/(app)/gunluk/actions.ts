@@ -4,17 +4,18 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { validateDailyLog } from "@/lib/daily/validation";
 import { GeminiProvider } from "@/lib/ai/gemini";
+import { todayInTR } from "@/lib/daily/today";
 
 export async function saveDailyLog(formData: FormData) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  if (!user) return redirect("/login");
 
   const result = validateDailyLog(Object.fromEntries(formData.entries()));
   if (!result.ok) {
-    redirect("/gunluk?error=" + encodeURIComponent(result.errors[0]));
+    return redirect("/gunluk?error=" + encodeURIComponent(result.errors[0]));
   }
   const d = result.data;
 
@@ -42,7 +43,7 @@ export async function saveDailyLog(formData: FormData) {
       notes: d.notes,
     })) ?? {};
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayInTR();
 
   const { error } = await supabase.from("daily_logs").upsert(
     {
@@ -56,8 +57,8 @@ export async function saveDailyLog(formData: FormData) {
     { onConflict: "user_id,log_date" }
   );
   if (error) {
-    redirect("/gunluk?error=" + encodeURIComponent("Kayıt başarısız: " + error.message));
+    return redirect("/gunluk?error=" + encodeURIComponent("Kayıt başarısız: " + error.message));
   }
 
-  redirect("/gunluk");
+  return redirect("/gunluk");
 }

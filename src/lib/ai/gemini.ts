@@ -59,7 +59,9 @@ const FEEDBACK_SCHEMA = {
 function buildFeedbackPrompt(inputs: DailyFeedbackInputs): string {
   const parts = [
     "Bir spor koçu ve diyetisyen olarak, kullanıcının bugünkü günlük kaydına Türkçe, kısa ve motive edici bir geri bildirim ver.",
-    `Hedef: ${inputs.goal}. Günlük kalori hedefi: ${inputs.calories} kcal.`,
+    inputs.calories > 0
+      ? `Hedef: ${inputs.goal}. Günlük kalori hedefi: ${inputs.calories} kcal.`
+      : `Hedef: ${inputs.goal}. (Kullanıcının henüz oluşturulmuş bir programı yok.)`,
     `Bugün antrenman yaptı mı: ${inputs.trained ? "evet" : "hayır"}.`,
     inputs.weightKg !== null ? `Bugünkü kilo: ${inputs.weightKg} kg.` : "Kilo girilmedi.",
     inputs.notes ? `Notları: ${inputs.notes}` : "Not yok.",

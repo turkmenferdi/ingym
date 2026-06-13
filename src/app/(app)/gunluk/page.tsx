@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import DailyForm from "./form";
+import { todayInTR } from "@/lib/daily/today";
 
 type LogRow = {
   log_date: string;
@@ -22,7 +23,7 @@ export default async function GunlukPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayInTR();
 
   const { data: logs } = await supabase
     .from("daily_logs")
@@ -38,6 +39,9 @@ export default async function GunlukPage({
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
       <h1 className="text-2xl font-bold">Günlük takip</h1>
+      <p className="text-xs text-gray-400">
+        ingym bilgilendirme amaçlıdır; tıbbi tavsiye yerine geçmez.
+      </p>
       {error && <p className="rounded bg-red-100 p-2 text-sm text-red-700">{error}</p>}
 
       <DailyForm
