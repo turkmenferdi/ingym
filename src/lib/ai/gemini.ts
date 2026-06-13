@@ -1,4 +1,10 @@
-import type { AiProvider, PlanContent, PlanInputs } from "./types";
+import type {
+  AiProvider,
+  PlanContent,
+  PlanInputs,
+  DailyFeedback,
+  DailyFeedbackInputs,
+} from "./types";
 
 const MODEL = "gemini-2.5-flash";
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
@@ -41,6 +47,27 @@ const RESPONSE_SCHEMA = {
   required: ["summary", "nutrition", "workout"],
 };
 
+const FEEDBACK_SCHEMA = {
+  type: "object",
+  properties: {
+    message: { type: "string" },
+    tip: { type: "string" },
+  },
+  required: ["message", "tip"],
+};
+
+function buildFeedbackPrompt(inputs: DailyFeedbackInputs): string {
+  const parts = [
+    "Bir spor koçu ve diyetisyen olarak, kullanıcının bugünkü günlük kaydına Türkçe, kısa ve motive edici bir geri bildirim ver.",
+    `Hedef: ${inputs.goal}. Günlük kalori hedefi: ${inputs.calories} kcal.`,
+    `Bugün antrenman yaptı mı: ${inputs.trained ? "evet" : "hayır"}.`,
+    inputs.weightKg !== null ? `Bugünkü kilo: ${inputs.weightKg} kg.` : "Kilo girilmedi.",
+    inputs.notes ? `Notları: ${inputs.notes}` : "Not yok.",
+    "message: 1-2 cümlelik kişisel geri bildirim. tip: yarına dair tek küçük, uygulanabilir öneri.",
+  ];
+  return parts.join("\n");
+}
+
 function buildPrompt(inputs: PlanInputs): string {
   const { targets, skeleton, profile } = inputs;
   const days = skeleton.days.map((d, i) => `${i + 1}. gün: ${d.focus}`).join("\n");
@@ -79,6 +106,30 @@ export class GeminiProvider implements AiProvider {
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!text) return null;
       return JSON.parse(text) as PlanContent;
+    } catch {
+      return null;
+    }
+  }
+
+  async generateDailyFeedback(inputs: DailyFeedbackInputs): Promise<DailyFeedback | null> {
+    if (!this.apiKey) return null;
+    try {
+      const res = await fetch(`${ENDPOINT}?key=${this.apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: buildFeedbackPrompt(inputs) }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: FEEDBACK_SCHEMA,
+          },
+        }),
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) return null;
+      return JSON.parse(text) as DailyFeedback;
     } catch {
       return null;
     }
