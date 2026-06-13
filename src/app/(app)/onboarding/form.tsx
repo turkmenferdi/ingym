@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { saveProfile } from "./actions";
+import { validateOnboarding } from "@/lib/onboarding/validation";
 
 const STEPS = ["Vücut bilgileri", "Hedef & antrenman", "Sağlık taraması"];
 
@@ -11,6 +12,7 @@ const labelCls = "flex flex-col gap-1 text-sm font-medium";
 export default function OnboardingForm({ error }: { error?: string }) {
   const [step, setStep] = useState(0);
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState<string[]>([]);
   const [v, setV] = useState({
     age: "",
     gender: "",
@@ -37,6 +39,30 @@ export default function OnboardingForm({ error }: { error?: string }) {
   ][step];
 
   async function submit() {
+    // Önce client tarafında doğrula: hatalıysa formu GÖNDERME, böylece girilen
+    // veriler korunur (sunucuya redirect olup state sıfırlanmaz).
+    const raw = {
+      age: v.age,
+      gender: v.gender,
+      heightCm: v.heightCm,
+      weightKg: v.weightKg,
+      activityLevel: v.activityLevel,
+      goal: v.goal,
+      experience: v.experience,
+      daysPerWeek: v.daysPerWeek,
+      pregnant: v.pregnant ? "on" : "",
+      heartCondition: v.heartCondition ? "on" : "",
+      diabetes: v.diabetes ? "on" : "",
+      eatingDisorderHistory: v.eatingDisorderHistory ? "on" : "",
+    };
+    const check = validateOnboarding(raw);
+    if (!check.ok) {
+      setErrors(check.errors);
+      setStep(0); // hatalı alanlar genelde ilk adımda; kullanıcıyı oraya getir
+      return;
+    }
+
+    setErrors([]);
     setSaving(true);
     const fd = new FormData();
     fd.set("age", v.age);
@@ -60,6 +86,13 @@ export default function OnboardingForm({ error }: { error?: string }) {
         Adım {step + 1}/{STEPS.length} — {STEPS[step]}
       </p>
       {error && <p className="rounded bg-red-100 p-2 text-sm text-red-700">{error}</p>}
+      {errors.length > 0 && (
+        <ul className="flex flex-col gap-1 rounded bg-red-100 p-3 text-sm text-red-700">
+          {errors.map((e, i) => (
+            <li key={i}>• {e}</li>
+          ))}
+        </ul>
+      )}
 
       {step === 0 && (
         <div className="flex flex-col gap-3">
