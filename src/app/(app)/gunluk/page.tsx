@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import DailyForm from "./form";
 import { todayInTR } from "@/lib/daily/today";
-import { deleteMeal } from "./actions";
+import { deleteMeal, addMealManual } from "./actions";
 
 type LogRow = {
   log_date: string;
@@ -114,6 +114,28 @@ export default async function GunlukPage({
             </div>
           ))
         )}
+        <form action={addMealManual} className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-3">
+          <p className="text-sm font-medium text-fg">Elle öğün ekle</p>
+          <input
+            name="name"
+            placeholder="Öğün adı"
+            required
+            className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint"
+          />
+          <div className="grid grid-cols-4 gap-2">
+            <input name="calories" type="number" inputMode="numeric" required placeholder="kcal"
+              className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+            <input name="proteinG" type="number" placeholder="P"
+              className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+            <input name="fatG" type="number" placeholder="Y"
+              className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+            <input name="carbsG" type="number" placeholder="K"
+              className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+          </div>
+          <button className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-fg hover:bg-base">
+            Ekle
+          </button>
+        </form>
       </section>
 
       {todayLog?.ai_feedback?.message && (
