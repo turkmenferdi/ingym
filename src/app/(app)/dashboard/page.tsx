@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { signOut } from "@/app/(auth)/actions";
 import { bmi } from "@/lib/safety";
 import { todayInTR } from "@/lib/daily/today";
+import PushButton from "@/app/(app)/_components/PushButton";
 
 const GOAL_LABELS: Record<string, string> = {
   lose: "Kilo vermek",
@@ -99,6 +100,7 @@ export default async function DashboardPage() {
             )}
           </>
         )}
+        <PushButton />
       </section>
 
       <section className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-4">
