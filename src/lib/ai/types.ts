@@ -16,6 +16,7 @@ export type PlanInputs = {
 export interface AiProvider {
   generatePlanContent(inputs: PlanInputs): Promise<PlanContent | null>;
   generateDailyFeedback(inputs: DailyFeedbackInputs): Promise<DailyFeedback | null>;
+  estimateFood(input: FoodImageInput): Promise<FoodEstimate | null>;
 }
 
 export type DailyFeedback = { message: string; tip: string };
@@ -26,4 +27,18 @@ export type DailyFeedbackInputs = {
   trained: boolean;
   weightKg: number | null;
   notes: string;
+};
+
+export type FoodEstimate = {
+  name: string;
+  calories: number;
+  proteinG: number;
+  fatG: number;
+  carbsG: number;
+  note: string;
+};
+
+export type FoodImageInput = {
+  imageBase64: string; // data: öneki OLMADAN saf base64
+  mimeType: string; // "image/jpeg" | "image/png" | "image/webp"
 };

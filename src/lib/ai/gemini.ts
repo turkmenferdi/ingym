@@ -4,6 +4,8 @@ import type {
   PlanInputs,
   DailyFeedback,
   DailyFeedbackInputs,
+  FoodEstimate,
+  FoodImageInput,
 } from "./types";
 
 const MODEL = "gemini-2.5-flash";
@@ -55,6 +57,26 @@ const FEEDBACK_SCHEMA = {
   },
   required: ["message", "tip"],
 };
+
+const FOOD_SCHEMA = {
+  type: "object",
+  properties: {
+    name: { type: "string" },
+    calories: { type: "number" },
+    proteinG: { type: "number" },
+    fatG: { type: "number" },
+    carbsG: { type: "number" },
+    note: { type: "string" },
+  },
+  required: ["name", "calories", "proteinG", "fatG", "carbsG", "note"],
+};
+
+const FOOD_PROMPT = [
+  "Bu yemek fotoğrafını analiz et. Gördüğün porsiyon için makul bir tahmin yap.",
+  "name: yemeğin Türkçe adı. calories: toplam tahmini kalori (kcal). proteinG/fatG/carbsG: gram cinsinden makrolar.",
+  "note: 1 cümle kısa açıklama; bunun bir TAHMİN olduğunu ve porsiyona göre değişebileceğini belirt.",
+  "Yemek göremiyorsan name='Yemek algılanamadı' ve değerleri 0 ver.",
+].join("\n");
 
 function buildFeedbackPrompt(inputs: DailyFeedbackInputs): string {
   const parts = [
@@ -132,6 +154,37 @@ export class GeminiProvider implements AiProvider {
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!text) return null;
       return JSON.parse(text) as DailyFeedback;
+    } catch {
+      return null;
+    }
+  }
+
+  async estimateFood(input: FoodImageInput): Promise<FoodEstimate | null> {
+    if (!this.apiKey) return null;
+    try {
+      const res = await fetch(`${ENDPOINT}?key=${this.apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { inlineData: { mimeType: input.mimeType, data: input.imageBase64 } },
+                { text: FOOD_PROMPT },
+              ],
+            },
+          ],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: FOOD_SCHEMA,
+          },
+        }),
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) return null;
+      return JSON.parse(text) as FoodEstimate;
     } catch {
       return null;
     }
