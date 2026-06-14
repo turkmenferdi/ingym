@@ -62,3 +62,17 @@ export async function saveDailyLog(formData: FormData) {
 
   return redirect("/gunluk");
 }
+
+export async function deleteMeal(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return redirect("/login");
+
+  const id = String(formData.get("id") ?? "");
+  if (id) {
+    await supabase.from("meals").delete().eq("id", id).eq("user_id", user.id);
+  }
+  return redirect("/gunluk");
+}
