@@ -6,7 +6,7 @@ import { validateOnboarding } from "@/lib/onboarding/validation";
 
 const STEPS = ["Vücut bilgileri", "Hedef & antrenman", "Sağlık taraması"];
 
-const inputCls = "rounded border p-3";
+const inputCls = "rounded-lg border border-border bg-surface p-3 text-fg placeholder:text-faint";
 const labelCls = "flex flex-col gap-1 text-sm font-medium";
 
 export default function OnboardingForm({ error }: { error?: string }) {
@@ -82,12 +82,12 @@ export default function OnboardingForm({ error }: { error?: string }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-faint">
         Adım {step + 1}/{STEPS.length} — {STEPS[step]}
       </p>
-      {error && <p className="rounded bg-red-100 p-2 text-sm text-red-700">{error}</p>}
+      {error && <p className="rounded-lg border border-red-900 bg-red-950 p-3 text-sm text-red-300">{error}</p>}
       {errors.length > 0 && (
-        <ul className="flex flex-col gap-1 rounded bg-red-100 p-3 text-sm text-red-700">
+        <ul className="flex flex-col gap-1 rounded-lg border border-red-900 bg-red-950 p-3 text-sm text-red-300">
           {errors.map((e, i) => (
             <li key={i}>• {e}</li>
           ))}
@@ -173,7 +173,7 @@ export default function OnboardingForm({ error }: { error?: string }) {
 
       {step === 2 && (
         <div className="flex flex-col gap-3">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted">
             Aşağıdakilerden sana uyan varsa işaretle. Bu bilgiler programını
             güvenli hale getirmek için kullanılır.
           </p>
@@ -185,7 +185,7 @@ export default function OnboardingForm({ error }: { error?: string }) {
               ["eatingDisorderHistory", "Yeme bozukluğu geçmişi"],
             ] as const
           ).map(([key, label]) => (
-            <label key={key} className="flex items-center gap-3 rounded border p-3 text-sm">
+            <label key={key} className="flex items-center gap-3 rounded-lg border border-border p-3 text-sm">
               <input type="checkbox" checked={v[key]}
                 onChange={(e) => set(key, e.target.checked)} />
               {label}
@@ -196,20 +196,20 @@ export default function OnboardingForm({ error }: { error?: string }) {
 
       <div className="flex gap-3">
         {step > 0 && (
-          <button type="button" className="rounded border p-3 font-medium"
+          <button type="button" className="rounded-lg border border-border p-3 font-medium text-fg hover:bg-surface"
             onClick={() => setStep(step - 1)}>
             Geri
           </button>
         )}
         {step < STEPS.length - 1 ? (
           <button type="button" disabled={!stepValid}
-            className="flex-1 rounded bg-black p-3 font-medium text-white disabled:opacity-40"
+            className="flex-1 rounded-lg bg-accent p-3 font-semibold text-black hover:bg-accent-hover disabled:opacity-40"
             onClick={() => setStep(step + 1)}>
             Devam
           </button>
         ) : (
           <button type="button" disabled={saving}
-            className="flex-1 rounded bg-black p-3 font-medium text-white disabled:opacity-40"
+            className="flex-1 rounded-lg bg-accent p-3 font-semibold text-black hover:bg-accent-hover disabled:opacity-40"
             onClick={submit}>
             {saving ? "Kaydediliyor…" : "Profili oluştur"}
           </button>

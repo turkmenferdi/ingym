@@ -38,52 +38,52 @@ export default async function ProgramPage({
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
       <h1 className="text-2xl font-bold">Programım</h1>
-      {error && <p className="rounded bg-red-100 p-2 text-sm text-red-700">{error}</p>}
+      {error && <p className="rounded-lg border border-red-900 bg-red-950 p-3 text-sm text-red-300">{error}</p>}
 
       {!plan ? (
         <>
-          <p className="text-gray-600">
+          <p className="text-muted">
             Henüz bir programın yok. Profilinden sana özel haftalık antrenman +
             beslenme planı oluşturalım.
           </p>
           <form action={generateProgram}>
-            <button className="rounded bg-black px-6 py-3 font-medium text-white">
+            <button className="rounded-lg bg-accent px-6 py-3 font-semibold text-black hover:bg-accent-hover disabled:opacity-40">
               Programımı oluştur
             </button>
           </form>
         </>
       ) : (
         <>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-faint">
             Bu plan bilgilendirme amaçlıdır; tıbbi tavsiye yerine geçmez.
           </p>
-          {content.summary && <p className="text-gray-700">{content.summary}</p>}
+          {content.summary && <p className="text-muted">{content.summary}</p>}
 
-          <section className="flex flex-col gap-1 rounded border p-4">
+          <section className="flex flex-col gap-1 rounded-xl border border-border bg-surface p-4">
             <h2 className="font-semibold">Günlük hedef</h2>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted">
               {t?.calories} kcal · P {t?.proteinG}g · Y {t?.fatG}g · K {t?.carbsG}g
             </p>
             {content.nutrition?.dailyNote && (
-              <p className="text-sm text-gray-500">{content.nutrition.dailyNote}</p>
+              <p className="text-sm text-muted">{content.nutrition.dailyNote}</p>
             )}
             {content.nutrition?.meals?.map((m, i) => (
-              <p key={i} className="text-sm text-gray-600">
+              <p key={i} className="text-sm text-muted">
                 • <strong>{m.meal}:</strong> {m.idea} (~{m.approxCalories} kcal)
               </p>
             ))}
           </section>
 
-          <section className="flex flex-col gap-2 rounded border p-4">
+          <section className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-4">
             <h2 className="font-semibold">Haftalık antrenman</h2>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-faint">
               Her egzersiz {skeleton?.setsPerExercise} set · {skeleton?.repRange} tekrar
             </p>
             {(content.workout && content.workout.length > 0
               ? content.workout
               : skeleton?.days.map((d) => ({ focus: d.focus, exercises: [] })) ?? []
             ).map((d, i) => (
-              <div key={i} className="text-sm text-gray-600">
+              <div key={i} className="text-sm text-muted">
                 <strong>{i + 1}. gün — {d.focus}</strong>
                 {d.exercises.length > 0 && (
                   <ul className="ml-4 list-disc">
@@ -95,7 +95,7 @@ export default async function ProgramPage({
           </section>
 
           <form action={generateProgram}>
-            <button className="rounded border px-6 py-3 font-medium">
+            <button className="rounded-lg border border-border px-6 py-3 font-medium text-fg hover:bg-surface">
               Yeniden oluştur
             </button>
           </form>

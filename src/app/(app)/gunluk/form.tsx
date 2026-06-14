@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { saveDailyLog } from "./actions";
 
-const inputCls = "rounded border p-3";
+const inputCls = "rounded-lg border border-border bg-surface p-3 text-fg placeholder:text-faint";
 const labelCls = "flex flex-col gap-1 text-sm font-medium";
 
 export default function DailyForm({
@@ -22,7 +22,7 @@ export default function DailyForm({
       }}
       className="flex flex-col gap-3"
     >
-      <label className="flex items-center gap-3 rounded border p-3 text-sm">
+      <label className="flex items-center gap-3 rounded-lg border border-border p-3 text-sm">
         <input type="checkbox" name="trained" checked={trained}
           onChange={(e) => setTrained(e.target.checked)} />
         Bugün antrenman yaptım
@@ -38,7 +38,7 @@ export default function DailyForm({
           defaultValue={initial.notes} placeholder="Öğünler, notlar…" />
       </label>
       <button disabled={saving}
-        className="rounded bg-black p-3 font-medium text-white disabled:opacity-40">
+        className="rounded-lg bg-accent p-3 font-semibold text-black hover:bg-accent-hover disabled:opacity-40">
         {saving ? "Kaydediliyor…" : "Günü kaydet ve geri bildirim al"}
       </button>
     </form>
