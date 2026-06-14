@@ -76,3 +76,31 @@ export async function deleteMeal(formData: FormData) {
   }
   return redirect("/gunluk");
 }
+
+export async function addMealManual(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return redirect("/login");
+
+  const name = String(formData.get("name") ?? "").trim().slice(0, 120);
+  const num = (k: string) => {
+    const n = Number(String(formData.get(k) ?? "").replace(",", "."));
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+  if (!name || num("calories") <= 0) {
+    return redirect("/gunluk?error=" + encodeURIComponent("Öğün adı ve kalori gerekli."));
+  }
+
+  await supabase.from("meals").insert({
+    user_id: user.id,
+    log_date: todayInTR(),
+    name,
+    calories: num("calories"),
+    protein_g: num("proteinG"),
+    fat_g: num("fatG"),
+    carbs_g: num("carbsG"),
+  });
+  return redirect("/gunluk");
+}
