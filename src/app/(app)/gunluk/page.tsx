@@ -119,18 +119,31 @@ export default async function GunlukPage({
           <input
             name="name"
             placeholder="Öğün adı"
+            aria-label="Öğün adı"
             required
             className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint"
           />
           <div className="grid grid-cols-4 gap-2">
-            <input name="calories" type="number" inputMode="numeric" required placeholder="kcal"
-              className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
-            <input name="proteinG" type="number" placeholder="P"
-              className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
-            <input name="fatG" type="number" placeholder="Y"
-              className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
-            <input name="carbsG" type="number" placeholder="K"
-              className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+            <label className="flex flex-col gap-1 text-xs text-faint">
+              kcal
+              <input name="calories" type="number" inputMode="numeric" required aria-label="Kalori (kcal)" placeholder="0"
+                className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+            </label>
+            <label className="flex flex-col gap-1 text-xs text-faint">
+              P
+              <input name="proteinG" type="number" inputMode="numeric" aria-label="Protein (gram)" placeholder="0"
+                className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+            </label>
+            <label className="flex flex-col gap-1 text-xs text-faint">
+              Y
+              <input name="fatG" type="number" inputMode="numeric" aria-label="Yağ (gram)" placeholder="0"
+                className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+            </label>
+            <label className="flex flex-col gap-1 text-xs text-faint">
+              K
+              <input name="carbsG" type="number" inputMode="numeric" aria-label="Karbonhidrat (gram)" placeholder="0"
+                className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+            </label>
           </div>
           <button className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-fg hover:bg-base">
             Ekle
