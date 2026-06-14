@@ -133,9 +133,12 @@ export class GeminiProvider implements AiProvider {
   async generatePlanContent(inputs: PlanInputs): Promise<PlanContent | null> {
     if (!this.apiKey) return null;
     try {
-      const res = await fetch(`${ENDPOINT}?key=${this.apiKey}`, {
+      const res = await fetch(ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": this.apiKey,
+        },
         body: JSON.stringify({
           contents: [{ parts: [{ text: buildPrompt(inputs) }] }],
           generationConfig: {
@@ -157,9 +160,12 @@ export class GeminiProvider implements AiProvider {
   async generateDailyFeedback(inputs: DailyFeedbackInputs): Promise<DailyFeedback | null> {
     if (!this.apiKey) return null;
     try {
-      const res = await fetch(`${ENDPOINT}?key=${this.apiKey}`, {
+      const res = await fetch(ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": this.apiKey,
+        },
         body: JSON.stringify({
           contents: [{ parts: [{ text: buildFeedbackPrompt(inputs) }] }],
           generationConfig: {
@@ -181,9 +187,12 @@ export class GeminiProvider implements AiProvider {
   async estimateFood(input: FoodImageInput): Promise<FoodEstimate | null> {
     if (!this.apiKey) return null;
     try {
-      const res = await fetch(`${ENDPOINT}?key=${this.apiKey}`, {
+      const res = await fetch(ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": this.apiKey,
+        },
         body: JSON.stringify({
           contents: [
             {
@@ -212,9 +221,12 @@ export class GeminiProvider implements AiProvider {
   async readBodyDocument(input: FoodImageInput): Promise<BodyReading | null> {
     if (!this.apiKey) return null;
     try {
-      const res = await fetch(`${ENDPOINT}?key=${this.apiKey}`, {
+      const res = await fetch(ENDPOINT, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": this.apiKey,
+        },
         body: JSON.stringify({
           contents: [
             {
