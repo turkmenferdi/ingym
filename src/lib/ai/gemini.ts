@@ -6,6 +6,7 @@ import type {
   DailyFeedbackInputs,
   FoodEstimate,
   FoodImageInput,
+  BodyReading,
 } from "./types";
 
 const MODEL = "gemini-2.5-flash";
@@ -70,6 +71,24 @@ const FOOD_SCHEMA = {
   },
   required: ["name", "calories", "proteinG", "fatG", "carbsG", "note"],
 };
+
+const BODY_SCHEMA = {
+  type: "object",
+  properties: {
+    weightKg: { type: "number" },
+    bodyFatPct: { type: "number" },
+    muscleMassKg: { type: "number" },
+    summary: { type: "string" },
+  },
+  required: ["weightKg", "bodyFatPct", "muscleMassKg", "summary"],
+};
+
+const BODY_PROMPT = [
+  "Bu görsel bir vücut analiz raporu (InBody vb.), kan tahlili veya tartı ekranı olabilir. Görseldeki sayısal değerleri oku.",
+  "weightKg: kilo (kg). bodyFatPct: vücut yağ oranı (%). muscleMassKg: kas kütlesi (kg).",
+  "Bir değer görselde YOKSA 0 ver (uydurma).",
+  "summary: hangi değerleri okuduğunu 1-2 cümleyle Türkçe özetle ve bunun bir foto okuması olduğunu, kesin olmadığını belirt.",
+].join("\n");
 
 const FOOD_PROMPT = [
   "Bu yemek fotoğrafını analiz et. Gördüğün porsiyon için makul bir tahmin yap.",
@@ -185,6 +204,37 @@ export class GeminiProvider implements AiProvider {
       const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
       if (!text) return null;
       return JSON.parse(text) as FoodEstimate;
+    } catch {
+      return null;
+    }
+  }
+
+  async readBodyDocument(input: FoodImageInput): Promise<BodyReading | null> {
+    if (!this.apiKey) return null;
+    try {
+      const res = await fetch(`${ENDPOINT}?key=${this.apiKey}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                { inlineData: { mimeType: input.mimeType, data: input.imageBase64 } },
+                { text: BODY_PROMPT },
+              ],
+            },
+          ],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: BODY_SCHEMA,
+          },
+        }),
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) return null;
+      return JSON.parse(text) as BodyReading;
     } catch {
       return null;
     }

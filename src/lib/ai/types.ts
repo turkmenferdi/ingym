@@ -17,6 +17,7 @@ export interface AiProvider {
   generatePlanContent(inputs: PlanInputs): Promise<PlanContent | null>;
   generateDailyFeedback(inputs: DailyFeedbackInputs): Promise<DailyFeedback | null>;
   estimateFood(input: FoodImageInput): Promise<FoodEstimate | null>;
+  readBodyDocument(input: FoodImageInput): Promise<BodyReading | null>;
 }
 
 export type DailyFeedback = { message: string; tip: string };
@@ -41,4 +42,11 @@ export type FoodEstimate = {
 export type FoodImageInput = {
   imageBase64: string; // data: öneki OLMADAN saf base64
   mimeType: string; // "image/jpeg" | "image/png" | "image/webp"
+};
+
+export type BodyReading = {
+  weightKg: number; // 0 = okunamadı
+  bodyFatPct: number; // 0 = okunamadı
+  muscleMassKg: number; // 0 = okunamadı
+  summary: string;
 };
