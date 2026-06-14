@@ -1,5 +1,8 @@
 import type { Metadata, Viewport } from "next";
+import { Sora } from "next/font/google";
 import "./globals.css";
+
+const sora = Sora({ subsets: ["latin"], weight: ["400", "600", "700"], variable: "--font-sora", display: "swap" });
 
 export const metadata: Metadata = {
   title: "ingym",
@@ -20,7 +23,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="tr">
+    <html lang="tr" className={sora.variable}>
       <body className="antialiased">{children}</body>
     </html>
   );
