@@ -30,3 +30,4 @@ Kişisel AI spor koçu ve diyetisyen (PWA). Next.js + Supabase + Gemini.
 - [x] Plan 3 — Program üretimi (C)
 - [x] Plan 4 — Günlük takip + feedback (D)
 - [x] v2-E — Yemek fotoğrafı → kalori (vision)
+- [x] v2-E2 — Yemek tahminini günlüğe ekle (öğünler + toplam kalori)

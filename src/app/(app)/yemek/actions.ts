@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { GeminiProvider } from "@/lib/ai/gemini";
 import type { FoodEstimate } from "@/lib/ai/types";
+import { todayInTR } from "@/lib/daily/today";
 
 export type EstimateResult =
   | { ok: true; estimate: FoodEstimate }
@@ -40,4 +41,34 @@ export async function estimateFood(formData: FormData): Promise<EstimateResult> 
     return { ok: false, error: "Tahmin yapılamadı, tekrar dene." };
   }
   return { ok: true, estimate };
+}
+
+export type AddMealResult = { ok: true } | { ok: false; error: string };
+
+export async function addMeal(formData: FormData): Promise<AddMealResult> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { ok: false, error: "Oturum bulunamadı, tekrar giriş yap." };
+
+  const name = String(formData.get("name") ?? "").trim().slice(0, 120);
+  if (!name) return { ok: false, error: "Yemek adı yok." };
+
+  const num = (k: string) => {
+    const n = Number(formData.get(k));
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  };
+
+  const { error } = await supabase.from("meals").insert({
+    user_id: user.id,
+    log_date: todayInTR(),
+    name,
+    calories: num("calories"),
+    protein_g: num("proteinG"),
+    fat_g: num("fatG"),
+    carbs_g: num("carbsG"),
+  });
+  if (error) return { ok: false, error: "Eklenemedi: " + error.message };
+  return { ok: true };
 }

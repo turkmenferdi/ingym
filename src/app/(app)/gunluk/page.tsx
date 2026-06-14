@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import DailyForm from "./form";
 import { todayInTR } from "@/lib/daily/today";
+import { deleteMeal } from "./actions";
 
 type LogRow = {
   log_date: string;
@@ -9,6 +10,15 @@ type LogRow = {
   weight_kg: number | null;
   notes: string;
   ai_feedback: { message?: string; tip?: string } | null;
+};
+
+type MealRow = {
+  id: string;
+  name: string;
+  calories: number;
+  protein_g: number;
+  fat_g: number;
+  carbs_g: number;
 };
 
 export default async function GunlukPage({
@@ -36,6 +46,25 @@ export default async function GunlukPage({
   const todayLog = rows.find((r) => r.log_date === today);
   const history = rows.filter((r) => r.log_date !== today);
 
+  const { data: mealsData } = await supabase
+    .from("meals")
+    .select("id, name, calories, protein_g, fat_g, carbs_g")
+    .eq("user_id", user.id)
+    .eq("log_date", today)
+    .order("created_at", { ascending: true });
+  const meals = (mealsData ?? []) as MealRow[];
+  const totalKcal = meals.reduce((s, m) => s + Number(m.calories), 0);
+
+  const { data: planRow } = await supabase
+    .from("plans")
+    .select("targets")
+    .eq("user_id", user.id)
+    .eq("status", "active")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  const targetKcal = (planRow?.targets as { calories?: number } | undefined)?.calories;
+
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
       <h1 className="text-2xl font-bold">Günlük takip</h1>
@@ -51,6 +80,41 @@ export default async function GunlukPage({
           notes: todayLog?.notes ?? "",
         }}
       />
+
+      <section className="flex flex-col gap-2">
+        <div className="flex items-baseline justify-between">
+          <h2 className="font-semibold">Bugünün öğünleri</h2>
+          <span className="text-sm text-muted">
+            {totalKcal} kcal{targetKcal ? ` / ${targetKcal}` : ""}
+          </span>
+        </div>
+        {meals.length === 0 ? (
+          <p className="text-sm text-faint">
+            Henüz öğün yok. Yemek sekmesinden fotoğrafla ekleyebilirsin.
+          </p>
+        ) : (
+          meals.map((m) => (
+            <div
+              key={m.id}
+              className="flex items-center justify-between gap-2 rounded-xl border border-border bg-surface p-3 text-sm"
+            >
+              <div>
+                <strong className="text-fg">{m.name}</strong>
+                <p className="text-faint">
+                  ~{Number(m.calories)} kcal · P {Number(m.protein_g)}g · Y{" "}
+                  {Number(m.fat_g)}g · K {Number(m.carbs_g)}g
+                </p>
+              </div>
+              <form action={deleteMeal}>
+                <input type="hidden" name="id" value={m.id} />
+                <button className="text-faint hover:text-red-400" aria-label="Sil">
+                  ✕
+                </button>
+              </form>
+            </div>
+          ))
+        )}
+      </section>
 
       {todayLog?.ai_feedback?.message && (
         <section className="flex flex-col gap-1 rounded-xl border border-accent/30 bg-accent/10 p-4">
