@@ -34,3 +34,4 @@ Kişisel AI spor koçu ve diyetisyen (PWA). Next.js + Supabase + Gemini.
 - [x] v2-B — Vücut/belge foto okuma (ölçümler)
 - [x] Öğün düzenleme (porsiyon + elle ekleme)
 - [x] Hatırlatıcı (uygulama-içi nudge)
+- [x] Hatırlatıcı (web push + günlük cron)
