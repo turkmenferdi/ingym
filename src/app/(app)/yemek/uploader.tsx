@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { estimateFood, type EstimateResult } from "./actions";
+import { estimateFood, addMeal, type EstimateResult } from "./actions";
 
 // Görüntüyü tarayıcıda küçült (server action body limitine takılmamak + hız).
 async function downscale(file: File, max = 1024, quality = 0.7): Promise<Blob> {
@@ -35,11 +35,14 @@ export default function FoodUploader() {
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<EstimateResult | null>(null);
+  const [added, setAdded] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     setResult(null);
+    setAdded(false);
     setPreview(URL.createObjectURL(file));
     setLoading(true);
     try {
@@ -52,6 +55,20 @@ export default function FoodUploader() {
     } finally {
       setLoading(false);
     }
+  }
+
+  async function onAdd() {
+    if (!result || !result.ok) return;
+    setAdding(true);
+    const fd = new FormData();
+    fd.set("name", result.estimate.name);
+    fd.set("calories", String(result.estimate.calories));
+    fd.set("proteinG", String(result.estimate.proteinG));
+    fd.set("fatG", String(result.estimate.fatG));
+    fd.set("carbsG", String(result.estimate.carbsG));
+    const res = await addMeal(fd);
+    setAdding(false);
+    if (res.ok) setAdded(true);
   }
 
   return (
@@ -87,6 +104,18 @@ export default function FoodUploader() {
             {result.estimate.fatG}g · K {result.estimate.carbsG}g
           </p>
           <p className="text-xs text-faint">{result.estimate.note}</p>
+          {added ? (
+            <p className="text-sm font-medium text-accent">✓ Bugüne eklendi</p>
+          ) : (
+            <button
+              type="button"
+              onClick={onAdd}
+              disabled={adding}
+              className="mt-1 rounded-lg border border-border px-4 py-2 text-sm font-medium text-fg hover:bg-surface disabled:opacity-40"
+            >
+              {adding ? "Ekleniyor…" : "Bugüne ekle"}
+            </button>
+          )}
         </section>
       )}
     </div>
