@@ -34,28 +34,30 @@ export async function saveDailyLog(formData: FormData) {
     .maybeSingle();
 
   const targets = plan?.targets as { calories?: number } | undefined;
-  const feedback =
-    (await new GeminiProvider().generateDailyFeedback({
-      goal: profile?.goal ?? "maintain",
-      calories: targets?.calories ?? 0,
-      trained: d.trained,
-      weightKg: d.weightKg,
-      notes: d.notes,
-    })) ?? {};
+  const feedback = await new GeminiProvider().generateDailyFeedback({
+    goal: profile?.goal ?? "maintain",
+    calories: targets?.calories ?? 0,
+    trained: d.trained,
+    weightKg: d.weightKg,
+    notes: d.notes,
+  });
 
   const today = todayInTR();
 
-  const { error } = await supabase.from("daily_logs").upsert(
-    {
-      user_id: user.id,
-      log_date: today,
-      trained: d.trained,
-      weight_kg: d.weightKg,
-      notes: d.notes,
-      ai_feedback: feedback,
-    },
-    { onConflict: "user_id,log_date" }
-  );
+  // AI başarısızsa (null) ai_feedback'i upsert'e koyma; transient hata
+  // önceki iyi geri bildirimi silmesin, günün verisi yine kaydedilsin.
+  const row: Record<string, unknown> = {
+    user_id: user.id,
+    log_date: today,
+    trained: d.trained,
+    weight_kg: d.weightKg,
+    notes: d.notes,
+  };
+  if (feedback) row.ai_feedback = feedback;
+
+  const { error } = await supabase
+    .from("daily_logs")
+    .upsert(row, { onConflict: "user_id,log_date" });
   if (error) {
     return redirect("/gunluk?error=" + encodeURIComponent("Kayıt başarısız: " + error.message));
   }
