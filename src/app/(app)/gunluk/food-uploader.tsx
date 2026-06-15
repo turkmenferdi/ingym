@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { estimateFood, addMeal, type EstimateResult } from "./actions";
+import { useRouter } from "next/navigation";
+import { estimateFood, addMeal, type EstimateResult } from "./food-actions";
 import { downscaleImage } from "@/lib/image";
 
 export default function FoodUploader() {
+  const router = useRouter();
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<EstimateResult | null>(null);
@@ -64,11 +66,15 @@ export default function FoodUploader() {
     fd.set("carbsG", String(edit.carbsG));
     const res = await addMeal(fd);
     setAdding(false);
-    if (res.ok) setAdded(true);
+    if (res.ok) {
+      setAdded(true);
+      // Öğün listesi (server component) yeni öğünü göstersin diye sayfayı tazele.
+      router.refresh();
+    }
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-3">
       <label className="rounded-lg bg-accent px-6 py-3 text-center font-semibold text-black hover:bg-accent-hover">
         {loading ? "Analiz ediliyor…" : "Fotoğraf çek / yükle"}
         <input
@@ -108,7 +114,7 @@ export default function FoodUploader() {
               ["calories", "Kalori"],
               ["proteinG", "Protein (g)"],
               ["fatG", "Yağ (g)"],
-              ["carbsG", "Karb (g)"],
+              ["carbsG", "Karbonhidrat (g)"],
             ] as const).map(([key, label]) => (
               <label key={key} className="flex flex-col gap-1 text-xs text-faint">
                 {label}

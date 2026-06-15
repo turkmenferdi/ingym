@@ -91,11 +91,11 @@ export default async function DashboardPage() {
             )}
             {!hasMeals && (
               <a
-                href="/yemek"
+                href="/gunluk"
                 className="flex items-center justify-between gap-2 rounded-lg border border-border bg-base p-3 text-sm text-fg hover:bg-surface"
               >
                 <span>Bugün öğün eklemedin</span>
-                <span className="text-accent">Yemek ekle →</span>
+                <span className="text-accent">Öğün ekle →</span>
               </a>
             )}
           </>

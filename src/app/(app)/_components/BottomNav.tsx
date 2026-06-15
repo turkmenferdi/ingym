@@ -47,13 +47,6 @@ function Icon({ name, className }: { name: string; className?: string }) {
           <path d="M3 10h18M8 3v4M16 3v4" />
         </svg>
       );
-    case "yemek":
-      return (
-        <svg {...common}>
-          <path d="M6 3v7a2 2 0 0 0 4 0V3M8 10v11" />
-          <path d="M16 3c-1.6 0-2.5 2.2-2.5 5s1 3.8 2.5 3.8V21" />
-        </svg>
-      );
     case "olcum":
       return (
         <svg {...common}>
@@ -71,7 +64,6 @@ const TABS = [
   { href: "/antrenman", label: "Antrenman", icon: "antrenman" },
   { href: "/diyet", label: "Diyet", icon: "diyet" },
   { href: "/gunluk", label: "Günlük", icon: "gunluk" },
-  { href: "/yemek", label: "Yemek", icon: "yemek" },
   { href: "/olcum", label: "Ölçüm", icon: "olcum" },
 ];
 

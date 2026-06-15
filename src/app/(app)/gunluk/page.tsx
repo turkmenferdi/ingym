@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import DailyForm from "./form";
 import { todayInTR } from "@/lib/daily/today";
 import { deleteMeal, addMealManual } from "./actions";
+import FoodUploader from "./food-uploader";
 
 type LogRow = {
   log_date: string;
@@ -90,7 +91,7 @@ export default async function GunlukPage({
         </div>
         {meals.length === 0 ? (
           <p className="text-sm text-faint">
-            Henüz öğün yok. Yemek sekmesinden fotoğrafla ekleyebilirsin.
+            Henüz öğün yok. Aşağıdan fotoğraf çekerek ya da elle ekleyebilirsin.
           </p>
         ) : (
           meals.map((m) => (
@@ -114,6 +115,14 @@ export default async function GunlukPage({
             </div>
           ))
         )}
+        <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-3">
+          <p className="text-sm font-medium text-fg">Fotoğrafla öğün ekle</p>
+          <p className="text-xs text-faint">
+            Yemeğinin fotoğrafını çek; yaklaşık kalori ve makroları tahmin edip ekleyelim.
+          </p>
+          <FoodUploader />
+        </div>
+
         <form action={addMealManual} className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-3">
           <p className="text-sm font-medium text-fg">Elle öğün ekle</p>
           <input
