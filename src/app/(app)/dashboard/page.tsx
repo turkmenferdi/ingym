@@ -121,10 +121,16 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      <a href="/program"
-        className="rounded-lg bg-accent px-6 py-3 text-center font-semibold text-black hover:bg-accent-hover">
-        Programıma git
-      </a>
+      <div className="grid grid-cols-2 gap-3">
+        <a href="/antrenman"
+          className="rounded-lg bg-accent px-6 py-3 text-center font-semibold text-black hover:bg-accent-hover">
+          Antrenmanım
+        </a>
+        <a href="/diyet"
+          className="rounded-lg bg-accent px-6 py-3 text-center font-semibold text-black hover:bg-accent-hover">
+          Diyetim
+        </a>
+      </div>
       <a href="/gunluk"
         className="rounded-lg border border-border px-6 py-3 text-center font-medium text-fg hover:bg-surface">
         Günlük takip

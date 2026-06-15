@@ -21,12 +21,23 @@ function Icon({ name, className }: { name: string; className?: string }) {
           <path d="M5 9.5V21h14V9.5" />
         </svg>
       );
-    case "program":
+    case "antrenman":
       return (
         <svg {...common}>
-          <rect x="5" y="4" width="14" height="17" rx="2" />
-          <path d="M9 4V3h6v1" />
-          <path d="M9 10h6M9 14h6M9 18h4" />
+          <path d="m6.5 6.5 11 11" />
+          <path d="m21 21-1-1" />
+          <path d="m3 3 1 1" />
+          <path d="m18 22 4-4" />
+          <path d="m2 6 4-4" />
+          <path d="m3 10 7-7" />
+          <path d="m14 21 7-7" />
+        </svg>
+      );
+    case "diyet":
+      return (
+        <svg {...common}>
+          <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" />
+          <path d="M10 2c1 .5 2 2 2 5" />
         </svg>
       );
     case "gunluk":
@@ -57,7 +68,8 @@ function Icon({ name, className }: { name: string; className?: string }) {
 
 const TABS = [
   { href: "/dashboard", label: "Panel", icon: "panel" },
-  { href: "/program", label: "Program", icon: "program" },
+  { href: "/antrenman", label: "Antrenman", icon: "antrenman" },
+  { href: "/diyet", label: "Diyet", icon: "diyet" },
   { href: "/gunluk", label: "Günlük", icon: "gunluk" },
   { href: "/yemek", label: "Yemek", icon: "yemek" },
   { href: "/olcum", label: "Ölçüm", icon: "olcum" },
