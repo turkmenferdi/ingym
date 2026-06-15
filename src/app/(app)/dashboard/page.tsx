@@ -41,7 +41,7 @@ export default async function DashboardPage() {
 
   if (profileReadFailed) {
     return (
-      <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-4 p-6">
+      <main className="mx-auto flex min-h-dvh max-w-md md:max-w-3xl flex-col justify-center gap-4 p-6">
         <h1 className="text-2xl font-bold">Bir sorun oluştu</h1>
         <p className="text-muted">
           Profilin yüklenemedi. Lütfen sayfayı yenile; sorun sürerse biraz sonra tekrar dene.
@@ -70,7 +70,7 @@ export default async function DashboardPage() {
   const hasFlags = Array.isArray(profile.health_flags) && profile.health_flags.length > 0;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
+    <main className="mx-auto flex min-h-dvh max-w-md md:max-w-3xl flex-col gap-6 p-6">
       <h1 className="text-2xl font-bold">Merhaba 👋</h1>
       <p className="text-muted">{user.email}</p>
 
@@ -91,11 +91,11 @@ export default async function DashboardPage() {
             )}
             {!hasMeals && (
               <a
-                href="/yemek"
+                href="/gunluk"
                 className="flex items-center justify-between gap-2 rounded-lg border border-border bg-base p-3 text-sm text-fg hover:bg-surface"
               >
                 <span>Bugün öğün eklemedin</span>
-                <span className="text-accent">Yemek ekle →</span>
+                <span className="text-accent">Öğün ekle →</span>
               </a>
             )}
           </>
@@ -121,10 +121,16 @@ export default async function DashboardPage() {
         )}
       </section>
 
-      <a href="/program"
-        className="rounded-lg bg-accent px-6 py-3 text-center font-semibold text-black hover:bg-accent-hover">
-        Programıma git
-      </a>
+      <div className="grid grid-cols-2 gap-3">
+        <a href="/antrenman"
+          className="rounded-lg bg-accent px-6 py-3 text-center font-semibold text-black hover:bg-accent-hover">
+          Antrenmanım
+        </a>
+        <a href="/diyet"
+          className="rounded-lg bg-accent px-6 py-3 text-center font-semibold text-black hover:bg-accent-hover">
+          Diyetim
+        </a>
+      </div>
       <a href="/gunluk"
         className="rounded-lg border border-border px-6 py-3 text-center font-medium text-fg hover:bg-surface">
         Günlük takip

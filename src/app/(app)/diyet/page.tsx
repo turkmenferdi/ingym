@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { generateProgram } from "./actions";
+import { generateProgram } from "../antrenman/actions";
 
-export default async function ProgramPage({
+export default async function DiyetPage({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>;
@@ -27,24 +27,19 @@ export default async function ProgramPage({
     | { calories: number; proteinG: number; fatG: number; carbsG: number }
     | undefined;
   const content = (plan?.content ?? {}) as {
-    summary?: string;
     nutrition?: { dailyNote?: string; meals?: { meal: string; idea: string; approxCalories: number }[] };
-    workout?: { focus: string; exercises: string[] }[];
   };
-  const skeleton = plan?.skeleton as
-    | { setsPerExercise: number; repRange: string; days: { focus: string }[] }
-    | undefined;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
-      <h1 className="text-2xl font-bold">Programım</h1>
+    <main className="mx-auto flex min-h-dvh max-w-md md:max-w-3xl flex-col gap-6 p-6">
+      <h1 className="text-2xl font-bold">Diyet</h1>
       {error && <p className="rounded-lg border border-red-900 bg-red-950 p-3 text-sm text-red-300">{error}</p>}
 
       {!plan ? (
         <>
           <p className="text-muted">
-            Henüz bir programın yok. Profilinden sana özel haftalık antrenman +
-            beslenme planı oluşturalım.
+            Henüz beslenme planın yok. Profiline göre günlük kalori hedefin ve öğün
+            fikirleri oluşturalım.
           </p>
           <form action={generateProgram}>
             <button className="rounded-lg bg-accent px-6 py-3 font-semibold text-black hover:bg-accent-hover disabled:opacity-40">
@@ -57,42 +52,27 @@ export default async function ProgramPage({
           <p className="text-xs text-faint">
             Bu plan bilgilendirme amaçlıdır; tıbbi tavsiye yerine geçmez.
           </p>
-          {content.summary && <p className="text-muted">{content.summary}</p>}
 
           <section className="flex flex-col gap-1 rounded-xl border border-border bg-surface p-4">
             <h2 className="font-semibold">Günlük hedef</h2>
             <p className="text-sm text-muted">
-              {t?.calories} kcal · P {t?.proteinG}g · Y {t?.fatG}g · K {t?.carbsG}g
+              {t?.calories} kcal · {t?.proteinG}g protein · {t?.fatG}g yağ · {t?.carbsG}g karbonhidrat
             </p>
             {content.nutrition?.dailyNote && (
               <p className="text-sm text-muted">{content.nutrition.dailyNote}</p>
             )}
-            {content.nutrition?.meals?.map((m, i) => (
-              <p key={i} className="text-sm text-muted">
-                • <strong>{m.meal}:</strong> {m.idea} (~{m.approxCalories} kcal)
-              </p>
-            ))}
           </section>
 
-          <section className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-4">
-            <h2 className="font-semibold">Haftalık antrenman</h2>
-            <p className="text-xs text-faint">
-              Her egzersiz {skeleton?.setsPerExercise} set · {skeleton?.repRange} tekrar
-            </p>
-            {(content.workout && content.workout.length > 0
-              ? content.workout
-              : skeleton?.days.map((d) => ({ focus: d.focus, exercises: [] })) ?? []
-            ).map((d, i) => (
-              <div key={i} className="text-sm text-muted">
-                <strong>{i + 1}. gün — {d.focus}</strong>
-                {d.exercises.length > 0 && (
-                  <ul className="ml-4 list-disc">
-                    {d.exercises.map((ex, j) => <li key={j}>{ex}</li>)}
-                  </ul>
-                )}
-              </div>
-            ))}
-          </section>
+          {content.nutrition?.meals && content.nutrition.meals.length > 0 && (
+            <section className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-4">
+              <h2 className="font-semibold">Öğün fikirleri</h2>
+              {content.nutrition.meals.map((m, i) => (
+                <p key={i} className="text-sm text-muted">
+                  • <strong>{m.meal}:</strong> {m.idea} (~{m.approxCalories} kcal)
+                </p>
+              ))}
+            </section>
+          )}
 
           <form action={generateProgram}>
             <button className="rounded-lg border border-border px-6 py-3 font-medium text-fg hover:bg-surface">

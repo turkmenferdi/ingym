@@ -12,6 +12,12 @@ import type {
 const MODEL = "gemini-2.5-flash";
 const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
 
+// Bir Gemini çağrısı asla süresiz beklememeli: çağrı kullanıcıyı bekleten kayıt
+// yolunda (örn. "Günü kaydet" → generateDailyFeedback). Zaman aşımında fetch
+// AbortError fırlatır; her metottaki try/catch bunu yakalayıp null döner, böylece
+// kayıt yine de tamamlanır (geri bildirim o güne eklenmez).
+const GEMINI_TIMEOUT_MS = 15_000;
+
 const RESPONSE_SCHEMA = {
   type: "object",
   properties: {
@@ -135,6 +141,7 @@ export class GeminiProvider implements AiProvider {
     try {
       const res = await fetch(ENDPOINT, {
         method: "POST",
+        signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": this.apiKey,
@@ -162,6 +169,7 @@ export class GeminiProvider implements AiProvider {
     try {
       const res = await fetch(ENDPOINT, {
         method: "POST",
+        signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": this.apiKey,
@@ -189,6 +197,7 @@ export class GeminiProvider implements AiProvider {
     try {
       const res = await fetch(ENDPOINT, {
         method: "POST",
+        signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": this.apiKey,
@@ -223,6 +232,7 @@ export class GeminiProvider implements AiProvider {
     try {
       const res = await fetch(ENDPOINT, {
         method: "POST",
+        signal: AbortSignal.timeout(GEMINI_TIMEOUT_MS),
         headers: {
           "Content-Type": "application/json",
           "x-goog-api-key": this.apiKey,

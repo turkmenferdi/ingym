@@ -6,6 +6,9 @@ import { computeTargets } from "@/lib/nutrition";
 import { buildSkeleton } from "@/lib/training";
 import { GeminiProvider } from "@/lib/ai/gemini";
 
+// Tek "program" = antrenman + beslenme birlikte üretilir ve tek plan satırına
+// yazılır. Görüntüleme /antrenman ve /diyet diye ikiye ayrıldı, ama üretim ortak;
+// bu yüzden iki sayfa da bu action'ı çağırır. Üretim sonrası /antrenman'a döner.
 export async function generateProgram() {
   const supabase = await createClient();
   const {
@@ -18,7 +21,7 @@ export async function generateProgram() {
     .select("*")
     .eq("user_id", user.id)
     .maybeSingle();
-  if (pErr) redirect("/program?error=" + encodeURIComponent("Profil okunamadı, tekrar dene."));
+  if (pErr) redirect("/antrenman?error=" + encodeURIComponent("Profil okunamadı, tekrar dene."));
   if (!profile) redirect("/onboarding");
 
   const cautious =
@@ -54,7 +57,7 @@ export async function generateProgram() {
     .single();
   if (error || !inserted) {
     redirect(
-      "/program?error=" +
+      "/antrenman?error=" +
         encodeURIComponent("Plan kaydedilemedi: " + (error?.message ?? ""))
     );
   }
@@ -67,5 +70,5 @@ export async function generateProgram() {
     .eq("status", "active")
     .neq("id", inserted.id);
 
-  redirect("/program");
+  redirect("/antrenman");
 }

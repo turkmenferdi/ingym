@@ -21,12 +21,23 @@ function Icon({ name, className }: { name: string; className?: string }) {
           <path d="M5 9.5V21h14V9.5" />
         </svg>
       );
-    case "program":
+    case "antrenman":
       return (
         <svg {...common}>
-          <rect x="5" y="4" width="14" height="17" rx="2" />
-          <path d="M9 4V3h6v1" />
-          <path d="M9 10h6M9 14h6M9 18h4" />
+          <path d="m6.5 6.5 11 11" />
+          <path d="m21 21-1-1" />
+          <path d="m3 3 1 1" />
+          <path d="m18 22 4-4" />
+          <path d="m2 6 4-4" />
+          <path d="m3 10 7-7" />
+          <path d="m14 21 7-7" />
+        </svg>
+      );
+    case "diyet":
+      return (
+        <svg {...common}>
+          <path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" />
+          <path d="M10 2c1 .5 2 2 2 5" />
         </svg>
       );
     case "gunluk":
@@ -34,13 +45,6 @@ function Icon({ name, className }: { name: string; className?: string }) {
         <svg {...common}>
           <rect x="3" y="5" width="18" height="16" rx="2" />
           <path d="M3 10h18M8 3v4M16 3v4" />
-        </svg>
-      );
-    case "yemek":
-      return (
-        <svg {...common}>
-          <path d="M6 3v7a2 2 0 0 0 4 0V3M8 10v11" />
-          <path d="M16 3c-1.6 0-2.5 2.2-2.5 5s1 3.8 2.5 3.8V21" />
         </svg>
       );
     case "olcum":
@@ -57,37 +61,67 @@ function Icon({ name, className }: { name: string; className?: string }) {
 
 const TABS = [
   { href: "/dashboard", label: "Panel", icon: "panel" },
-  { href: "/program", label: "Program", icon: "program" },
+  { href: "/antrenman", label: "Antrenman", icon: "antrenman" },
+  { href: "/diyet", label: "Diyet", icon: "diyet" },
   { href: "/gunluk", label: "Günlük", icon: "gunluk" },
-  { href: "/yemek", label: "Yemek", icon: "yemek" },
   { href: "/olcum", label: "Ölçüm", icon: "olcum" },
 ];
 
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // Onboarding akışında alt menü gösterme (kullanıcının henüz profili yok).
+  // Onboarding akışında menü gösterme (kullanıcının henüz profili yok).
   if (pathname.startsWith("/onboarding")) return null;
 
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(href + "/");
+
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-base/95 backdrop-blur">
-      <div className="mx-auto flex max-w-md">
-        {TABS.map((tab) => {
-          const active = pathname === tab.href || pathname.startsWith(tab.href + "/");
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] ${
-                active ? "text-accent" : "text-faint"
-              }`}
-            >
-              <Icon name={tab.icon} className="h-5 w-5" />
-              {tab.label}
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+    <>
+      {/* Masaüstü: sol kenar çubuğu */}
+      <aside className="fixed left-0 top-0 z-10 hidden h-dvh w-60 flex-col border-r border-border bg-base/95 p-4 backdrop-blur md:flex">
+        <span className="px-3 py-2 text-lg font-bold text-accent">ingym</span>
+        <nav className="mt-2 flex flex-col gap-1">
+          {TABS.map((tab) => {
+            const active = isActive(tab.href);
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                aria-current={active ? "page" : undefined}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${
+                  active ? "bg-surface text-accent" : "text-faint hover:bg-surface hover:text-fg"
+                }`}
+              >
+                <Icon name={tab.icon} className="h-5 w-5" />
+                {tab.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+
+      {/* Mobil: alt çubuk */}
+      <nav className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-base/95 backdrop-blur md:hidden">
+        <div className="mx-auto flex max-w-md">
+          {TABS.map((tab) => {
+            const active = isActive(tab.href);
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                aria-current={active ? "page" : undefined}
+                className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] ${
+                  active ? "text-accent" : "text-faint"
+                }`}
+              >
+                <Icon name={tab.icon} className="h-5 w-5" />
+                {tab.label}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }
