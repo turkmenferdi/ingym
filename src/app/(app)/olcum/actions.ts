@@ -74,6 +74,55 @@ export async function saveMeasurement(formData: FormData): Promise<SaveMeasureme
   return { ok: true };
 }
 
+// Elle ölçüm girişi (asıl yol): kullanıcı tartıdaki değeri doğrudan yazar.
+// Foto okuma (analyzeBody) opsiyonel kaldı. Sunucu action'ı; başarınca /olcum'a döner.
+export async function addMeasurementManual(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return redirect("/login");
+
+  // null = boş bırakıldı (opsiyonel), NaN = girildi ama aralık dışı/geçersiz.
+  const numOrNull = (k: string, min: number, max: number) => {
+    const raw = formData.get(k);
+    if (raw === null || String(raw).trim() === "") return null;
+    const n = Number(String(raw).replace(",", "."));
+    return Number.isFinite(n) && n >= min && n <= max ? n : NaN;
+  };
+
+  const weightKg = numOrNull("weightKg", 20, 400);
+  const bodyFatPct = numOrNull("bodyFatPct", 1, 70);
+  const muscleMassKg = numOrNull("muscleMassKg", 1, 200);
+
+  if (weightKg === null || Number.isNaN(weightKg)) {
+    return redirect("/olcum?error=" + encodeURIComponent("Geçerli bir kilo gir (20-400 kg)."));
+  }
+  if (Number.isNaN(bodyFatPct) || Number.isNaN(muscleMassKg)) {
+    return redirect("/olcum?error=" + encodeURIComponent("Yağ % (1-70) ve kas (1-200 kg) geçerli olmalı."));
+  }
+
+  const { error } = await supabase.from("measurements").insert({
+    user_id: user.id,
+    measured_date: todayInTR(),
+    weight_kg: weightKg,
+    body_fat_pct: bodyFatPct,
+    muscle_mass_kg: muscleMassKg,
+    summary: "",
+  });
+  if (error) {
+    return redirect("/olcum?error=" + encodeURIComponent("Kaydedilemedi: " + error.message));
+  }
+
+  if (formData.get("applyWeight") === "on") {
+    await supabase
+      .from("profiles")
+      .update({ weight_kg: weightKg, updated_at: new Date().toISOString() })
+      .eq("user_id", user.id);
+  }
+  return redirect("/olcum");
+}
+
 export async function deleteMeasurement(formData: FormData) {
   const supabase = await createClient();
   const {
