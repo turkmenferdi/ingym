@@ -32,7 +32,7 @@ export default async function AntrenmanPage({
     | undefined;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
+    <main className="mx-auto flex min-h-dvh max-w-md md:max-w-3xl flex-col gap-6 p-6">
       <h1 className="text-2xl font-bold">Antrenman</h1>
       {error && <p className="rounded-lg border border-red-900 bg-red-950 p-3 text-sm text-red-300">{error}</p>}
 

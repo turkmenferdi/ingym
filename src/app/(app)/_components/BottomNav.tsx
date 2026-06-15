@@ -70,28 +70,58 @@ const TABS = [
 export default function BottomNav() {
   const pathname = usePathname();
 
-  // Onboarding akışında alt menü gösterme (kullanıcının henüz profili yok).
+  // Onboarding akışında menü gösterme (kullanıcının henüz profili yok).
   if (pathname.startsWith("/onboarding")) return null;
 
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(href + "/");
+
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-base/95 backdrop-blur">
-      <div className="mx-auto flex max-w-md">
-        {TABS.map((tab) => {
-          const active = pathname === tab.href || pathname.startsWith(tab.href + "/");
-          return (
-            <Link
-              key={tab.href}
-              href={tab.href}
-              className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] ${
-                active ? "text-accent" : "text-faint"
-              }`}
-            >
-              <Icon name={tab.icon} className="h-5 w-5" />
-              {tab.label}
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+    <>
+      {/* Masaüstü: sol kenar çubuğu */}
+      <aside className="fixed left-0 top-0 z-10 hidden h-dvh w-60 flex-col border-r border-border bg-base/95 p-4 backdrop-blur md:flex">
+        <span className="px-3 py-2 text-lg font-bold text-accent">ingym</span>
+        <nav className="mt-2 flex flex-col gap-1">
+          {TABS.map((tab) => {
+            const active = isActive(tab.href);
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                aria-current={active ? "page" : undefined}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm ${
+                  active ? "bg-surface text-accent" : "text-faint hover:bg-surface hover:text-fg"
+                }`}
+              >
+                <Icon name={tab.icon} className="h-5 w-5" />
+                {tab.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+
+      {/* Mobil: alt çubuk */}
+      <nav className="fixed inset-x-0 bottom-0 z-10 border-t border-border bg-base/95 backdrop-blur md:hidden">
+        <div className="mx-auto flex max-w-md">
+          {TABS.map((tab) => {
+            const active = isActive(tab.href);
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                aria-current={active ? "page" : undefined}
+                className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] ${
+                  active ? "text-accent" : "text-faint"
+                }`}
+              >
+                <Icon name={tab.icon} className="h-5 w-5" />
+                {tab.label}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </>
   );
 }

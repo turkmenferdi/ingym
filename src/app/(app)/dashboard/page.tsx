@@ -41,7 +41,7 @@ export default async function DashboardPage() {
 
   if (profileReadFailed) {
     return (
-      <main className="mx-auto flex min-h-dvh max-w-md flex-col justify-center gap-4 p-6">
+      <main className="mx-auto flex min-h-dvh max-w-md md:max-w-3xl flex-col justify-center gap-4 p-6">
         <h1 className="text-2xl font-bold">Bir sorun oluştu</h1>
         <p className="text-muted">
           Profilin yüklenemedi. Lütfen sayfayı yenile; sorun sürerse biraz sonra tekrar dene.
@@ -70,7 +70,7 @@ export default async function DashboardPage() {
   const hasFlags = Array.isArray(profile.health_flags) && profile.health_flags.length > 0;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
+    <main className="mx-auto flex min-h-dvh max-w-md md:max-w-3xl flex-col gap-6 p-6">
       <h1 className="text-2xl font-bold">Merhaba 👋</h1>
       <p className="text-muted">{user.email}</p>
 

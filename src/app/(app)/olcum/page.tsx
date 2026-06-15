@@ -35,7 +35,7 @@ export default async function OlcumPage({
   const rows = (data ?? []) as MRow[];
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-4 p-6">
+    <main className="mx-auto flex min-h-dvh max-w-md md:max-w-3xl flex-col gap-4 p-6">
       <h1 className="text-2xl font-bold">Ölçümler</h1>
       <p className="text-sm text-muted">
         Tartına çık, değeri buraya yaz. Kilonu (istersen yağ % ve kas kütleni de) kaydet,

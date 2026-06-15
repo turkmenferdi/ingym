@@ -67,7 +67,7 @@ export default async function GunlukPage({
   const targetKcal = (planRow?.targets as { calories?: number } | undefined)?.calories;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-6 p-6">
+    <main className="mx-auto flex min-h-dvh max-w-md md:max-w-3xl flex-col gap-6 p-6">
       <h1 className="text-2xl font-bold">Günlük takip</h1>
       <p className="text-xs text-gray-400">
         ingym bilgilendirme amaçlıdır; tıbbi tavsiye yerine geçmez.
