@@ -8,10 +8,21 @@ export default async function LoginPage({
   const { error } = await searchParams;
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center gap-4 p-6">
-      <h1 className="text-2xl font-bold text-accent">ingym</h1>
-      {error && <p className="rounded-lg border border-red-900 bg-red-950 p-3 text-sm text-red-300">{error}</p>}
-      <form className="flex flex-col gap-3">
+    <main className="grid min-h-dvh md:grid-cols-2">
+      {/* Masaüstünde sol marka paneli; mobilde gizli (form panelindeki başlık yeter). */}
+      <section className="hidden flex-col justify-center gap-4 border-r border-border p-16 md:flex">
+        <h1 className="text-6xl font-bold text-accent">ingym</h1>
+        <p className="max-w-md text-xl text-muted">
+          Kişisel AI spor koçun ve diyetisyenin.
+        </p>
+      </section>
+
+      {/* Form paneli — masaüstünde ekranın sağ yarısını doldurur, mobilde tek kolon. */}
+      <section className="flex flex-col justify-center p-6 md:p-16">
+        <div className="mx-auto flex w-full max-w-sm flex-col gap-4 md:mx-0">
+          <h1 className="text-2xl font-bold text-accent md:hidden">ingym</h1>
+          {error && <p className="rounded-lg border border-red-900 bg-red-950 p-3 text-sm text-red-300">{error}</p>}
+          <form className="flex flex-col gap-3">
         <label className="flex flex-col gap-1.5 text-xs text-faint">
           E-posta
           <input
@@ -37,6 +48,8 @@ export default async function LoginPage({
         </label>
         <LoginButtons />
       </form>
+        </div>
+      </section>
     </main>
   );
 }
