@@ -102,8 +102,8 @@ export default async function GunlukPage({
               <div>
                 <strong className="text-fg">{m.name}</strong>
                 <p className="text-faint">
-                  ~{Number(m.calories)} kcal · P {Number(m.protein_g)}g · Y{" "}
-                  {Number(m.fat_g)}g · K {Number(m.carbs_g)}g
+                  ~{Number(m.calories)} kcal · Protein {Number(m.protein_g)}g · Yağ{" "}
+                  {Number(m.fat_g)}g · Karb {Number(m.carbs_g)}g
                 </p>
               </div>
               <form action={deleteMeal}>
@@ -115,49 +115,53 @@ export default async function GunlukPage({
             </div>
           ))
         )}
-        <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-3">
+        <div className="flex flex-col gap-2 rounded-xl border border-accent/40 bg-accent/5 p-3">
           <p className="text-sm font-medium text-fg">Fotoğrafla öğün ekle</p>
           <p className="text-xs text-faint">
-            Yemeğinin fotoğrafını çek; yaklaşık kalori ve makroları tahmin edip ekleyelim.
+            En kolay yol: yemeğinin fotoğrafını çek, yaklaşık kalori ve makroları tahmin edip ekleyelim.
           </p>
           <FoodUploader />
         </div>
 
-        <form action={addMealManual} className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-3">
-          <p className="text-sm font-medium text-fg">Elle öğün ekle</p>
-          <input
-            name="name"
-            placeholder="Öğün adı"
-            aria-label="Öğün adı"
-            required
-            className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint"
-          />
-          <div className="grid grid-cols-4 gap-2">
-            <label className="flex flex-col gap-1 text-xs text-faint">
-              kcal
-              <input name="calories" type="number" inputMode="numeric" required aria-label="Kalori (kcal)" placeholder="0"
-                className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
-            </label>
-            <label className="flex flex-col gap-1 text-xs text-faint">
-              P
-              <input name="proteinG" type="number" inputMode="numeric" aria-label="Protein (gram)" placeholder="0"
-                className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
-            </label>
-            <label className="flex flex-col gap-1 text-xs text-faint">
-              Y
-              <input name="fatG" type="number" inputMode="numeric" aria-label="Yağ (gram)" placeholder="0"
-                className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
-            </label>
-            <label className="flex flex-col gap-1 text-xs text-faint">
-              K
-              <input name="carbsG" type="number" inputMode="numeric" aria-label="Karbonhidrat (gram)" placeholder="0"
-                className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
-            </label>
-          </div>
-          <button className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-fg hover:bg-base">
-            Ekle
-          </button>
-        </form>
+        <details className="rounded-xl border border-border bg-surface p-3">
+          <summary className="cursor-pointer select-none text-sm font-medium text-fg">
+            Elle ekle <span className="font-normal text-faint">— kaloriyi biliyorsan</span>
+          </summary>
+          <form action={addMealManual} className="mt-3 flex flex-col gap-2">
+            <input
+              name="name"
+              placeholder="Öğün adı"
+              aria-label="Öğün adı"
+              required
+              className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint"
+            />
+            <div className="grid grid-cols-4 gap-2">
+              <label className="flex flex-col gap-1 text-xs text-faint">
+                kcal
+                <input name="calories" type="number" inputMode="numeric" required aria-label="Kalori (kcal)" placeholder="0"
+                  className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-faint">
+                Protein
+                <input name="proteinG" type="number" inputMode="numeric" aria-label="Protein (gram)" placeholder="0"
+                  className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-faint">
+                Yağ
+                <input name="fatG" type="number" inputMode="numeric" aria-label="Yağ (gram)" placeholder="0"
+                  className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+              </label>
+              <label className="flex flex-col gap-1 text-xs text-faint">
+                Karb
+                <input name="carbsG" type="number" inputMode="numeric" aria-label="Karbonhidrat (gram)" placeholder="0"
+                  className="rounded-lg border border-border bg-base p-2 text-sm text-fg placeholder:text-faint" />
+              </label>
+            </div>
+            <button className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-fg hover:bg-base">
+              Ekle
+            </button>
+          </form>
+        </details>
       </section>
 
       {todayLog?.ai_feedback?.message && (
