@@ -1,4 +1,4 @@
-import { signIn, signUp } from "../actions";
+import LoginButtons from "./buttons";
 
 export default async function LoginPage({
   searchParams,
@@ -35,18 +35,7 @@ export default async function LoginPage({
             className="rounded-lg border border-border bg-surface p-3 text-base text-fg placeholder:text-faint"
           />
         </label>
-        <button
-          formAction={signIn}
-          className="rounded-lg bg-accent p-3 font-semibold text-black hover:bg-accent-hover"
-        >
-          Giriş yap
-        </button>
-        <button
-          formAction={signUp}
-          className="rounded-lg border border-border p-3 font-medium text-fg hover:bg-surface"
-        >
-          Kayıt ol
-        </button>
+        <LoginButtons />
       </form>
     </main>
   );
