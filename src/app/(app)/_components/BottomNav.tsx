@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -80,7 +81,10 @@ export default function BottomNav() {
     <>
       {/* Masaüstü: sol kenar çubuğu */}
       <aside className="fixed left-0 top-0 z-10 hidden h-dvh w-60 flex-col border-r border-border bg-base/95 p-4 backdrop-blur md:flex">
-        <span className="px-3 py-2 text-lg font-bold text-accent">ingym</span>
+        <span className="flex items-center gap-2 px-3 py-2 text-lg font-bold text-accent">
+          <Image src="/mark.png" alt="" width={512} height={512} className="h-7 w-7 rounded-md" />
+          ingym
+        </span>
         <nav className="mt-2 flex flex-col gap-1">
           {TABS.map((tab) => {
             const active = isActive(tab.href);

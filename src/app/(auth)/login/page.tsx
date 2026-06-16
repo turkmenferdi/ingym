@@ -1,3 +1,4 @@
+import Image from "next/image";
 import LoginButtons from "./buttons";
 
 export default async function LoginPage({
@@ -10,8 +11,17 @@ export default async function LoginPage({
   return (
     <main className="grid min-h-dvh md:grid-cols-2">
       {/* Masaüstünde sol marka paneli; mobilde gizli (form panelindeki başlık yeter). */}
-      <section className="hidden flex-col justify-center gap-4 border-r border-border p-16 md:flex">
-        <h1 className="text-6xl font-bold text-accent">ingym</h1>
+      <section className="hidden flex-col justify-center gap-6 border-r border-border p-16 md:flex">
+        <h1 className="sr-only">ingym</h1>
+        <Image
+          src="/logo.png"
+          alt="ingym — Fitness & Performance"
+          width={1200}
+          height={654}
+          priority
+          sizes="28rem"
+          className="h-auto w-full max-w-md rounded-2xl"
+        />
         <p className="max-w-md text-xl text-muted">
           Kişisel AI spor koçun ve diyetisyenin.
         </p>
